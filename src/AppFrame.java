@@ -40,10 +40,11 @@ public class AppFrame {
 
         redButton.addActionListener(e -> {
             tournament = new Single(sorter.getImages());
+            tournament.startTournament(redButton, blueButton);
         });
 
         blueButton.addActionListener(e -> {
-            tournament = new Full(sorter.getImages());
+            // tournament = new Full(sorter.getImages());
         });
 
         container.add(redButton);

@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Sorter {
-    private ArrayList<Image> images;
+    private ArrayList<ImageAsset> images;
 
     public Sorter() {
         this.images = Loader.loadAssets();
@@ -13,7 +13,7 @@ public class Sorter {
         frame.show();
     }
 
-    public ArrayList<Image> getImages() {
+    public ArrayList<ImageAsset> getImages() {
         return images;
     }
 }

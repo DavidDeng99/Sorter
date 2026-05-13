@@ -1,13 +1,13 @@
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-public class Image {
+public class ImageAsset {
     private String name;
-    private BufferedImage image;
+    private Image image;
 
-    public Image(File file) throws IOException {
+    public ImageAsset(File file) throws IOException {
         String fileName = file.getName();
         this.name = fileName.split("\\.")[0];
         image = ImageIO.read(file);
@@ -17,7 +17,7 @@ public class Image {
         return name;
     }
 
-    public BufferedImage getImage() {
+    public Image getImage() {
         return image;
     }
 }
