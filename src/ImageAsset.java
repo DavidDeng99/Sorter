@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class ImageAsset {
-    private String name;
-    private Image image;
+    private final String name;
+    private final Image image;
 
     public ImageAsset(File file) throws IOException {
         String fileName = file.getName();

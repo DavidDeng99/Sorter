@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Single extends Tournament {
@@ -7,38 +6,30 @@ public class Single extends Tournament {
     int numMatches; // for the current round
     int currMatch = 0; // in the current round
     boolean byes = false; // Are we handling byes right now
-    ArrayList<ImageAsset> nextRound;
+    private ArrayList<ImageAsset> nextRound;
+    private ArrayList<ImageAsset> images;
 
     public Single(ArrayList<ImageAsset> images, AppFrame appFrame) {
-        super(images, appFrame);
+        super(appFrame);
+        this.images = images;
         nextRound = new ArrayList<>();
         setParameters(images.size());
     }
 
-    void startTournament(JButton redButton, JButton blueButton, JLabel status) {
+    protected void startTournament(JButton redButton, JButton blueButton, JLabel status) {
         clearListeners(redButton);
         clearListeners(blueButton);
 
         redButton.setText(null);
         blueButton.setText(null);
 
-        redButton.addActionListener(e -> {
-            update(2 * currMatch, redButton, blueButton, status);
-        });
+        redButton.addActionListener(e -> update(2 * currMatch, redButton, blueButton, status));
 
-        blueButton.addActionListener(e -> {
-            update(2 * currMatch + 1, redButton, blueButton, status);
-        });
+        blueButton.addActionListener(e -> update(2 * currMatch + 1, redButton, blueButton, status));
 
-        imageHandler.updateButton(redButton, 2 * currMatch, images);
-        imageHandler.updateButton(blueButton, 2 * currMatch + 1, images);
+        imageHandler.updateButton(redButton, images.get(2 * currMatch));
+        imageHandler.updateButton(blueButton,  images.get(2 * currMatch + 1));
         updateStatus(status);
-    }
-
-    private void clearListeners(JButton button) {
-        for (ActionListener al : button.getActionListeners()) {
-            button.removeActionListener(al);
-        }
     }
 
     private void update(int idx, JButton redButton, JButton blueButton, JLabel status) {
@@ -62,8 +53,8 @@ public class Single extends Tournament {
             nextRound = new ArrayList<>();
         }
 
-        imageHandler.updateButton(redButton, 2 * currMatch, images);
-        imageHandler.updateButton(blueButton, 2 * currMatch + 1, images);
+        imageHandler.updateButton(redButton, images.get(2 * currMatch));
+        imageHandler.updateButton(blueButton, images.get(2 * currMatch + 1));
         updateStatus(status);
     }
 
@@ -95,7 +86,7 @@ public class Single extends Tournament {
         }
     }
 
-    private void updateStatus(JLabel status) {
+    protected void updateStatus(JLabel status) {
         if (byes) {
             status.setText("Handling byes: Match " + currMatch + " of " + numMatches);
         } else {

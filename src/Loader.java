@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +20,7 @@ public class Loader {
             e.printStackTrace();
         }
 
-        Collections.shuffle(images);
+        // Collections.shuffle(images);
         return images;
     }
 }

@@ -1,11 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class ImageHandler {
-    public void updateButton(JButton button, int idx, ArrayList<ImageAsset> images) {
-        ImageAsset image = images.get(idx);
-
+    public void updateButton(JButton button, ImageAsset image) {
         button.removeAll(); // Clear any previous labels
         button.setLayout(new BorderLayout());
         button.setText("");

@@ -3,8 +3,8 @@ import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
 public class Selection extends JButton {
-    private Color backgroundColour;
-    private int cornerRadius = 50;
+    private final Color backgroundColour;
+    private final int cornerRadius = 50;
 
     // Initialise class
     public Selection(String label, Color colour) {
@@ -38,7 +38,7 @@ public class Selection extends JButton {
         super.paintComponent(g);
     }
 
-    // Mouse should be inside of the rounded rectangle
+    // Mouse should be inside the rounded rectangle
     @Override
     public boolean contains(int x, int y) {
         Shape shape = new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), cornerRadius, cornerRadius);

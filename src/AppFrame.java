@@ -1,13 +1,14 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class AppFrame {
     Sorter sorter; // maintain a reference to the main class
     Tournament tournament;
-    private JFrame frame;
-    private JPanel masterPanel;
-    private JLabel headerLabel;
+    private final JFrame frame;
+    private final JPanel masterPanel;
+    private final JLabel headerLabel;
     ImageHandler imageHandler;
 
     public AppFrame(Sorter sorter) {
@@ -56,7 +57,9 @@ public class AppFrame {
         });
 
         blueButton.addActionListener(e -> {
-            // tournament = new Full(sorter.getImages());
+            tournament = new Full(sorter.getImages(), this);
+            tournament.startTournament(redButton, blueButton, status);
+            headerLabel.setText("Select the better image: ");
         });
 
         pairPanel.add(redButton);
@@ -87,8 +90,64 @@ public class AppFrame {
         resultsContainer.add(imageLabel);
         masterPanel.add(resultsContainer, BorderLayout.CENTER);
 
-        // 6. Refresh the UI
         masterPanel.revalidate();
         masterPanel.repaint();
     }
+
+    public void displayFullResults(ArrayList<ScoredImage> scoredImages) {
+        // clear the middle part
+        BorderLayout layout = (BorderLayout) masterPanel.getLayout();
+        Component centerComp = layout.getLayoutComponent(BorderLayout.CENTER);
+        masterPanel.remove(centerComp);
+
+        headerLabel.setText("Final Ranking");
+
+        JPanel resultsContainer = new JPanel();
+        resultsContainer.setLayout(new BoxLayout(resultsContainer, BoxLayout.Y_AXIS));
+        resultsContainer.setOpaque(false);
+        resultsContainer.setBorder(new EmptyBorder(40, 0, 40, 0));
+
+        int rank = 1;
+        for (int i = scoredImages.size() - 1; i >= 0; i--) {
+
+            ImageAsset asset = scoredImages.get(i).getImageAsset();
+
+            Font labelFont = new Font("SansSerif", Font.PLAIN, 18);
+
+            JLabel nameLabel = new JLabel(rank + ". " + asset.getName());
+            nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            nameLabel.setFont(labelFont);
+            nameLabel.setForeground(new Color(245, 245, 245));
+            nameLabel.setOpaque(false);
+
+            JLabel imageLabel = new JLabel(
+                    imageHandler.resultImage(asset.getImage(), frame.getWidth())
+            );
+            imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            resultsContainer.add(nameLabel);
+            resultsContainer.add(Box.createVerticalStrut(10));
+            resultsContainer.add(imageLabel);
+            resultsContainer.add(Box.createVerticalStrut(40));
+
+            rank++;
+        }
+
+        JScrollPane scrollPane = new JScrollPane(resultsContainer);
+        scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(30);
+
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        resultsContainer.setOpaque(false);
+
+        masterPanel.add(scrollPane, BorderLayout.CENTER);
+
+        masterPanel.revalidate();
+        masterPanel.repaint();
+
+        SwingUtilities.invokeLater(() -> {
+            JScrollBar bar = scrollPane.getVerticalScrollBar();
+            bar.setValue(bar.getMaximum());
+        });}
 }
