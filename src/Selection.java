@@ -15,7 +15,7 @@ public class Selection extends JButton {
         setFocusPainted(false);
         setBorderPainted(false);
         setForeground(new Color(245, 245, 245));
-        setFont(new Font("SansSerif", Font.PLAIN, 18));
+        setFont(new Font("SansSerif", Font.PLAIN, 20));
     }
 
     // Display the button

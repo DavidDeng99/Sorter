@@ -1,22 +1,21 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Single extends Tournament {
-    int byes; // if the number of images isn't a power of 2
-    int iterationsRemaining;
-    int numRounds; // for the current iteration
-    int currRound = 0; // for the current iteration
+    int roundsRemaining;
+    int numMatches; // for the current round
+    int currMatch = 0; // in the current round
+    boolean byes = false; // Are we handling byes right now
     ArrayList<ImageAsset> nextRound;
 
-    public Single(ArrayList<ImageAsset> images) {
-        super(images);
+    public Single(ArrayList<ImageAsset> images, AppFrame appFrame) {
+        super(images, appFrame);
         nextRound = new ArrayList<>();
         setParameters(images.size());
     }
 
-    void startTournament(JButton redButton, JButton blueButton) {
+    void startTournament(JButton redButton, JButton blueButton, JLabel status) {
         clearListeners(redButton);
         clearListeners(blueButton);
 
@@ -24,21 +23,16 @@ public class Single extends Tournament {
         blueButton.setText(null);
 
         redButton.addActionListener(e -> {
-            update(2 * currRound, redButton, blueButton);
-            if (iterationsRemaining == 0) {
-                return;
-            }
+            update(2 * currMatch, redButton, blueButton, status);
         });
 
         blueButton.addActionListener(e -> {
-            update(2 * currRound + 1, redButton, blueButton);
-            if (iterationsRemaining == 0) {
-                return;
-            }
+            update(2 * currMatch + 1, redButton, blueButton, status);
         });
 
-        displayImages(redButton, blueButton);
-
+        imageHandler.updateButton(redButton, 2 * currMatch, images);
+        imageHandler.updateButton(blueButton, 2 * currMatch + 1, images);
+        updateStatus(status);
     }
 
     private void clearListeners(JButton button) {
@@ -47,32 +41,33 @@ public class Single extends Tournament {
         }
     }
 
-    private void update(int idx, JButton redButton, JButton blueButton) {
-        System.out.println("One person eliminated");
-        if (iterationsRemaining == 0) {
+    private void update(int idx, JButton redButton, JButton blueButton, JLabel status) {
+        if (roundsRemaining == 0) {
             return;
         }
         nextRound.add(images.get(idx));
-        currRound++;
-        if (currRound == numRounds) {
-            iterationsRemaining -= 1;
-            if (iterationsRemaining == 0) {
-                System.out.println("Successful");
-                System.out.println(nextRound.size());
+        currMatch++;
+        if (currMatch == numMatches) {
+            roundsRemaining -= 1;
+            byes = false;
+            if (roundsRemaining == 0) {
+                appFrame.displaySingleResults(nextRound.getFirst());
                 return;
             }
 
-            numRounds = (int) Math.pow(2, iterationsRemaining - 1);
-            currRound = 0;
+            numMatches = (int) Math.pow(2, roundsRemaining - 1);
+            currMatch = 0;
 
             images = nextRound;
             nextRound = new ArrayList<>();
         }
 
-        displayImages(redButton, blueButton);
+        imageHandler.updateButton(redButton, 2 * currMatch, images);
+        imageHandler.updateButton(blueButton, 2 * currMatch + 1, images);
+        updateStatus(status);
     }
 
-    public void setParameters(int num) {
+    private void setParameters(int num) {
         int power2 = 1;
         int power = 0;
         while (power2 < num) {
@@ -80,51 +75,32 @@ public class Single extends Tournament {
             power++;
         }
 
-        iterationsRemaining = power;
+        roundsRemaining = power;
         if (power2 == num) {
-            numRounds = num / 2;
+            numMatches = num / 2;
             return;
         }
+
+        byes = true;
 
         // In each round two people are compared
         int numRem = (int) Math.pow(2, power - 1); // we want a power of 2 remaining after the first iteration;
 
-        numRounds = num - numRem; // Get to power of 2 in the first iteration.
+        numMatches = num - numRem; // Get to power of 2 in the first iteration.
 
-        int byes = num - numRounds * 2;
+        int numByes = num - numMatches * 2;
 
-        for (int i = 0; i < byes; i++) {
+        for (int i = 0; i < numByes; i++) {
             nextRound.add(images.get(num - 1 - i));
         }
     }
 
-    private ImageIcon getScaledIcon(Image image, int width, int height) {
-        Image scaledImg = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        return new ImageIcon(scaledImg);
-    }
-
-    private void displayImages(JButton redButton, JButton blueButton) {
-        Image blueImg = images.get(2 * currRound).getImage();
-        Image redImg = images.get(2 * currRound + 1).getImage();
-
-        blueButton.setIcon(getAutoScaledIcon(blueImg, blueButton));
-        redButton.setIcon(getAutoScaledIcon(redImg, redButton));
-    }
-
-    private ImageIcon getAutoScaledIcon(Image image, JButton button) {
-        int padding = 100;
-
-        int availableWidth = button.getWidth() - padding;
-        int availableHeight = button.getHeight() - padding;
-
-        int imageWidth = image.getWidth(null);
-        int imageHeight = image.getHeight(null);
-
-        double ratio = Math.min((double) availableWidth / imageWidth, (double) availableHeight / imageHeight);
-        int finalWidth = (int) (imageWidth * ratio);
-        int finalHeight = (int) (imageHeight * ratio);
-
-        return getScaledIcon(image, finalWidth, finalHeight);
+    private void updateStatus(JLabel status) {
+        if (byes) {
+            status.setText("Handling byes: Match " + currMatch + " of " + numMatches);
+        } else {
+            status.setText("Round of " + (int) Math.pow(2, roundsRemaining) + ": Match " + currMatch + " of " + numMatches);
+        }
     }
 
 }
