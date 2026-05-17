@@ -73,12 +73,6 @@ public class Full extends Tournament {
                 second = 0;
             }
 
-            int z;
-            if (first < second) {
-                z = first;
-                first = second;
-                second = z;
-            }
             currPair = new IntPair(first, second);
             return;
         }
@@ -90,12 +84,6 @@ public class Full extends Tournament {
                 second = (int) Math.floor(Math.random() * scoredImages.size());
             }
 
-            int z;
-            if (first < second) {
-                z = first;
-                first = second;
-                second = z;
-            }
             currPair = new IntPair(first, second);
             return;
         }
@@ -112,12 +100,6 @@ public class Full extends Tournament {
         int firstIndex = scoredImages.indexOf(sorted.get(sortedIdx1));
         int secondIndex = scoredImages.indexOf(sorted.get(sortedIdx2));
 
-        int z;
-        if (firstIndex < secondIndex) {
-            z = firstIndex;
-            firstIndex = secondIndex;
-            secondIndex = z;
-        }
         currPair = new IntPair(firstIndex, secondIndex);
     }
 

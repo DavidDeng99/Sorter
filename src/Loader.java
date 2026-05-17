@@ -20,7 +20,7 @@ public class Loader {
             e.printStackTrace();
         }
 
-        // Collections.shuffle(images);
+        Collections.shuffle(images);
         return images;
     }
 }
