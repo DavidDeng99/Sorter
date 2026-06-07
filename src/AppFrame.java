@@ -23,7 +23,7 @@ public class AppFrame {
         masterPanel.setBorder(new EmptyBorder(30, 30, 30, 30));
         masterPanel.setBackground(Color.DARK_GRAY);
 
-        headerLabel = new JLabel("Select one option:", SwingConstants.CENTER);
+        headerLabel = new JLabel("Click one of the buttons to get started", SwingConstants.CENTER);
         headerLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
         headerLabel.setForeground(new Color(235, 235, 235));
         headerLabel.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -47,8 +47,15 @@ public class AppFrame {
         JPanel pairPanel = new JPanel(new GridLayout(1, 2, 50, 50));
         pairPanel.setOpaque(false);
 
-        Selection redButton = new Selection("Single elimination tournament (one winner)", new Color(231, 76, 60));
-        Selection blueButton = new Selection("General tournament (exact ranking)", new Color(52, 152, 219));
+        Selection redButton = new Selection(
+                "Start",
+                new Color(231, 76, 60)
+        );
+
+        Selection blueButton = new Selection(
+                "Start",
+                new Color(52, 152, 219)
+        );
 
         redButton.addActionListener(e -> {
             tournament = new Single(sorter.getImages(), this);
@@ -57,14 +64,15 @@ public class AppFrame {
         });
 
         blueButton.addActionListener(e -> {
-            tournament = new Full(sorter.getImages(), this);
+            tournament = new Single(sorter.getImages(), this);
             tournament.startTournament(redButton, blueButton, status);
-            headerLabel.setText("Select the better image: ");
+            headerLabel.setText("Select the better image:");
         });
 
         pairPanel.add(redButton);
         pairPanel.add(blueButton);
-        container.add(pairPanel);
+
+        container.add(pairPanel, BorderLayout.CENTER);
         return container;
     }
 
